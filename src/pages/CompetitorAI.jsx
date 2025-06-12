@@ -36,7 +36,7 @@ const CompetitorAIApp = () => {
           const response = await fetch(`${API_URL}/leads/snapshot`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url: url }),
+            body: JSON.stringify({ url: url, email: email }),
           });
           const data = await response.json();
           setSnapshot(data?.data);

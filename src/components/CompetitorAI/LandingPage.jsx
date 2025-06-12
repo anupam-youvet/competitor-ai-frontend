@@ -304,7 +304,7 @@ const LandingPage = ({ url, setUrl, handleAnalyze, email, setEmail }) => {
                       : "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:shadow-md"
                   }`}
                 >
-                  {isButtonDisabled ? "Complete All Fields" : "Analyze"}
+                  {"Analyze"}
                 </button>
               </div>
 
