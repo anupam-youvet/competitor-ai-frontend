@@ -1,20 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const ContactPage = ({ contactForm, setContactForm, handleContactSubmit }) => {
+const initialState = {
+  name: "",
+  email: "",
+  phone: "",
+  saasSpend: "",
+  goals: "",
+};
+const ContactPage = ({ setCurrentStep }) => {
+  const API_URL = import.meta.env.VITE_APP_API_URL;
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [contactForm, setContactForm] = useState(initialState);
   const validateForm = () => {
     const newErrors = {};
-
     if (!contactForm.name?.trim()) {
       newErrors.name = "Name is required";
     }
 
-    if (!contactForm.workEmail?.trim()) {
-      newErrors.workEmail = "Work email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactForm.workEmail)) {
-      newErrors.workEmail = "Please enter a valid email address";
+    if (!contactForm.email?.trim()) {
+      newErrors.email = "Work email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactForm.email)) {
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!contactForm.phone?.trim()) {
@@ -37,7 +44,15 @@ const ContactPage = ({ contactForm, setContactForm, handleContactSubmit }) => {
     if (validateForm()) {
       setIsSubmitting(true);
       try {
-        await handleContactSubmit();
+        const response = await fetch(`${API_URL}/leads/contact`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(contactForm),
+        });
+        await response.json();
+        setCurrentStep("contactSuccess");
+      } catch (error) {
+        console.log("Error in contact form: ", error);
       } finally {
         setIsSubmitting(false);
       }
@@ -145,7 +160,6 @@ const ContactPage = ({ contactForm, setContactForm, handleContactSubmit }) => {
         <div className="lg:w-3/5">
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8">
             <div className="space-y-6">
-              {/* Name Field */}
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
                   Name *
@@ -174,23 +188,21 @@ const ContactPage = ({ contactForm, setContactForm, handleContactSubmit }) => {
                 <input
                   type="email"
                   placeholder="Enter your work email"
-                  value={contactForm.workEmail || ""}
+                  value={contactForm.email || ""}
                   onChange={(e) =>
                     setContactForm({
                       ...contactForm,
-                      workEmail: e.target.value,
+                      email: e.target.value,
                     })
                   }
                   className={`w-full bg-gray-50 border rounded-xl px-4 py-3 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-200 ${
-                    errors.workEmail
+                    errors.email
                       ? "border-red-300 bg-red-50"
                       : "border-gray-200"
                   }`}
                 />
-                {errors.workEmail && (
-                  <p className="mt-2 text-sm text-red-600">
-                    {errors.workEmail}
-                  </p>
+                {errors.email && (
+                  <p className="mt-2 text-sm text-red-600">{errors.email}</p>
                 )}
               </div>
 

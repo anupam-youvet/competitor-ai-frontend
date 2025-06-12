@@ -8,24 +8,21 @@ import ReportTypeModal from "../components/CompetitorAI/ReportTypeModal";
 import ThankYouPage from "../components/CompetitorAI/ThankYouPage";
 import DemoPage from "../components/CompetitorAI/DemoPage";
 import ContactPage from "../components/CompetitorAI/ContactPage";
+import ContactFormSuccess from "../components/CompetitorAI/ContactSuccess";
 
 const CompetitorAIApp = () => {
   const [currentStep, setCurrentStep] = useState("landing"); // landing, analyzing, results, reportType, thankYou, demo, contact
   const [url, setUrl] = useState("");
+  const [snapshot, setSnapshot] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [reportType, setReportType] = useState("quick");
   const [progress, setProgress] = useState(0);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [contactForm, setContactForm] = useState({
-    name: "",
-    workEmail: "",
-    phone: "",
-    saasSpend: "",
-    goals: "",
-  });
 
+  const API_URL = import.meta.env.VITE_APP_API_URL;
   // Simulate analysis progress
+
   useEffect(() => {
     if (currentStep === "analyzing") {
       setProgress(0);
@@ -35,23 +32,27 @@ const CompetitorAIApp = () => {
       // Start the API call
       const analyzeWebsite = async () => {
         try {
-          setTimeout(async () => {
-            const response = await fetch(
-              "https://jsonplaceholder.typicode.com/posts"
-            );
-            await response.json();
+          // setTimeout(async () => {
+          const response = await fetch(`${API_URL}/leads/snapshot`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: url }),
+          });
+          const data = await response.json();
+          setSnapshot(data?.data);
 
-            // API completed - stop progress simulation and jump to 100%
-            apiCompleted = true;
-            clearInterval(progressInterval);
+          // API completed - stop progress simulation and jump to 100%
+          apiCompleted = true;
+          clearInterval(progressInterval);
 
-            setProgress(100);
+          setProgress(100);
 
-            // Wait a moment to show 100% then go to results
-            setTimeout(() => {
-              setCurrentStep("results");
-            }, 500);
-          }, 10000);
+          // Wait a moment to show 100% then go to results
+          setTimeout(() => {
+            setCurrentStep("results");
+            window.scrollTo(0, 0);
+          }, 500);
+          // }, 10000);
         } catch (error) {
           apiCompleted = true;
           clearInterval(progressInterval);
@@ -91,21 +92,15 @@ const CompetitorAIApp = () => {
   };
 
   const handleReportGeneration = () => {
-    // if (email.trim()) {
     setCurrentStep("thankYou");
-    // }
-  };
-
-  const handleContactSubmit = () => {
-    if (contactForm.name && contactForm.workEmail) {
-      setCurrentStep("thankYou");
-    }
+    window.scrollTo(0, 0);
   };
 
   return (
     <div className="min-h-screen bg-white">
       <Header
         setCurrentStep={setCurrentStep}
+        setUrl={setUrl}
         showMobileMenu={showMobileMenu}
         setShowMobileMenu={setShowMobileMenu}
       />
@@ -119,18 +114,17 @@ const CompetitorAIApp = () => {
       )}
       {currentStep === "analyzing" && <AnalyzingPage progress={progress} />}
       {currentStep === "results" && (
-        <ResultsPage setCurrentStep={setCurrentStep} />
+        <ResultsPage snapshot={snapshot} setCurrentStep={setCurrentStep} />
       )}
       {currentStep === "thankYou" && (
         <ThankYouPage setCurrentStep={setCurrentStep} />
       )}
       {currentStep === "demo" && <DemoPage setCurrentStep={setCurrentStep} />}
       {currentStep === "contact" && (
-        <ContactPage
-          contactForm={contactForm}
-          setContactForm={setContactForm}
-          handleContactSubmit={handleContactSubmit}
-        />
+        <ContactPage setCurrentStep={setCurrentStep} />
+      )}
+      {currentStep === "contactSuccess" && (
+        <ContactFormSuccess setUrl={setUrl} setCurrentStep={setCurrentStep} />
       )}
       {currentStep === "reportType" && (
         <ReportTypeModal

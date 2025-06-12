@@ -53,7 +53,7 @@ const ReportTypeModal = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] w-full px-4 mb-10">
+    <div className="flex flex-col items-center justify-center min-h-[70vh] w-full px-4 my-10">
       <h2 className="text-3xl font-bold text-gray-900 mb-10 text-center">
         Choose your report type
       </h2>

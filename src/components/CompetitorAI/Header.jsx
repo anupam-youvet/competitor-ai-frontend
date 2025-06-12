@@ -1,7 +1,12 @@
 import React from "react";
 import { Menu, X } from "lucide-react";
 
-const Header = ({ setCurrentStep, showMobileMenu, setShowMobileMenu }) => {
+const Header = ({
+  setCurrentStep,
+  showMobileMenu,
+  setShowMobileMenu,
+  setUrl,
+}) => {
   return (
     <>
       {/* Header */}
@@ -13,6 +18,7 @@ const Header = ({ setCurrentStep, showMobileMenu, setShowMobileMenu }) => {
               <h1
                 onClick={() => {
                   setCurrentStep("landing");
+                  setUrl("");
                   window.scrollTo(0, 0);
                 }}
                 className="text-xl sm:text-2xl font-bold text-[#0B0D17] cursor-default"
