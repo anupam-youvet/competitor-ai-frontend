@@ -10,7 +10,6 @@ const ThankYouPage = ({ setCurrentStep }) => (
     <button
       onClick={() => {
         setCurrentStep("contact");
-        window.scrollTo(0, 0);
       }}
       className="bg-blue-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-base mx-auto"
     >

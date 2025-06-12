@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import robotImg from "../../assets/robot.png";
-const LandingPage = ({ url, setUrl, handleAnalyze, progress }) => {
+const LandingPage = ({ url, setUrl, handleAnalyze, email, setEmail }) => {
   const [urlError, setUrlError] = useState("");
   const [isValidUrl, setIsValidUrl] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [isValidEmail, setIsValidEmail] = useState(false);
 
   // URL validation function
   const validateUrl = (inputUrl) => {
@@ -42,28 +44,70 @@ const LandingPage = ({ url, setUrl, handleAnalyze, progress }) => {
     }
   };
 
+  // Email validation function
+  const validateEmail = (inputEmail) => {
+    if (!inputEmail.trim()) {
+      setEmailError("");
+      setIsValidEmail(false);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(inputEmail.trim())) {
+      setEmailError("Please enter a valid email address");
+      setIsValidEmail(false);
+      return;
+    }
+
+    setEmailError("");
+    setIsValidEmail(true);
+  };
+
   // Validate URL whenever it changes
   useEffect(() => {
     validateUrl(url);
   }, [url]);
 
+  // Validate email whenever it changes
+  useEffect(() => {
+    validateEmail(email);
+  }, [email]);
+
+  useEffect(() => {
+    setEmail("");
+    setUrl("");
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleUrlChange = (e) => {
     setUrl(e.target.value);
   };
 
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
   const handleAnalyzeClick = () => {
-    if (isValidUrl && url.trim()) {
+    if (isValidUrl && url.trim() && isValidEmail && email?.trim()) {
       handleAnalyze();
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && isValidUrl && url.trim()) {
+    if (
+      e.key === "Enter" &&
+      isValidUrl &&
+      url.trim() &&
+      isValidEmail &&
+      email?.trim()
+    ) {
       handleAnalyze();
     }
   };
 
-  const isButtonDisabled = !url.trim() || !isValidUrl;
+  const isButtonDisabled =
+    !url.trim() || !isValidUrl || !email?.trim() || !isValidEmail;
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -100,7 +144,7 @@ const LandingPage = ({ url, setUrl, handleAnalyze, progress }) => {
             <div className="w-full max-w-2xl mx-auto lg:mx-0 mt-2">
               {/* Mobile: Stacked Layout */}
               <div className="flex flex-col sm:hidden w-full gap-3">
-                {/* Input with Icon */}
+                {/* URL Input with Icon */}
                 <div
                   className={`flex w-full bg-gray-100 rounded-lg border shadow-sm transition-colors duration-200 ${
                     urlError ? "border-red-300 bg-red-50" : "border-gray-200"
@@ -168,36 +212,20 @@ const LandingPage = ({ url, setUrl, handleAnalyze, progress }) => {
                   )}
                 </div>
 
-                {/* Error Message */}
+                {/* URL Error Message */}
                 {urlError && (
                   <p className="text-red-600 text-sm text-left px-1">
                     {urlError}
                   </p>
                 )}
 
-                {/* Full Width Button */}
-                <button
-                  onClick={handleAnalyzeClick}
-                  disabled={isButtonDisabled}
-                  className={`w-full py-4 font-bold text-base rounded-lg transition-all duration-200 shadow-sm ${
-                    isButtonDisabled
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:shadow-md"
-                  }`}
-                >
-                  {isButtonDisabled ? "Enter Valid URL" : "Analyze"}
-                </button>
-              </div>
-
-              {/* Desktop: Inline Layout */}
-              <div className="hidden sm:block w-full">
+                {/* Email Input with Icon */}
                 <div
-                  className={`flex w-full bg-gray-100 rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-all duration-200 ${
-                    urlError ? "border-red-300 bg-red-50" : "border-gray-200"
+                  className={`flex w-full bg-gray-100 rounded-lg border shadow-sm transition-colors duration-200 ${
+                    emailError ? "border-red-300 bg-red-50" : "border-gray-200"
                   }`}
                 >
-                  {/* Search Icon */}
-                  <div className="flex items-center px-3 text-gray-400">
+                  <div className="flex items-center px-4 text-gray-400">
                     <svg
                       width="20"
                       height="20"
@@ -209,27 +237,24 @@ const LandingPage = ({ url, setUrl, handleAnalyze, progress }) => {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"
+                        d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                       />
                     </svg>
                   </div>
-
-                  {/* Input Field */}
                   <input
-                    type="text"
-                    placeholder="Enter website URL (e.g., example.com)"
-                    value={url}
-                    onChange={handleUrlChange}
-                    className={`flex-1 bg-transparent outline-none px-2 py-3 text-lg placeholder-gray-500 ${
-                      urlError ? "text-red-700" : ""
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    className={`flex-1 bg-transparent outline-none px-2 py-4 text-base placeholder-gray-500 ${
+                      emailError ? "text-red-700" : ""
                     }`}
                     onKeyPress={handleKeyPress}
                   />
-
-                  {/* URL Status Icon */}
-                  {url.trim() && (
+                  {/* Email Status Icon */}
+                  {email?.trim() && (
                     <div className="flex items-center px-3">
-                      {isValidUrl ? (
+                      {isValidEmail ? (
                         <svg
                           className="w-5 h-5 text-green-500"
                           fill="none"
@@ -260,27 +285,203 @@ const LandingPage = ({ url, setUrl, handleAnalyze, progress }) => {
                       )}
                     </div>
                   )}
+                </div>
 
-                  {/* Analyze Button */}
+                {/* Email Error Message */}
+                {emailError && (
+                  <p className="text-red-600 text-sm text-left px-1">
+                    {emailError}
+                  </p>
+                )}
+
+                {/* Full Width Button */}
+                <button
+                  onClick={handleAnalyzeClick}
+                  disabled={isButtonDisabled}
+                  className={`w-full py-4 font-bold text-base rounded-lg transition-all duration-200 shadow-sm ${
+                    isButtonDisabled
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:shadow-md"
+                  }`}
+                >
+                  {isButtonDisabled ? "Complete All Fields" : "Analyze"}
+                </button>
+              </div>
+
+              {/* Desktop: Inline Layout */}
+              <div className="hidden sm:block w-full">
+                <div className="flex flex-col gap-3">
+                  {/* URL Input */}
+                  <div
+                    className={`flex w-full bg-gray-100 rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-all duration-200 ${
+                      urlError ? "border-red-300 bg-red-50" : "border-gray-200"
+                    }`}
+                  >
+                    {/* Search Icon */}
+                    <div className="flex items-center px-3 text-gray-400">
+                      <svg
+                        width="20"
+                        height="20"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"
+                        />
+                      </svg>
+                    </div>
+
+                    {/* Input Field */}
+                    <input
+                      type="text"
+                      placeholder="Enter website URL"
+                      value={url}
+                      onChange={handleUrlChange}
+                      className={`flex-1 bg-transparent outline-none px-2 py-3 text-lg placeholder-gray-500 ${
+                        urlError ? "text-red-700" : ""
+                      }`}
+                      onKeyPress={handleKeyPress}
+                    />
+
+                    {/* URL Status Icon */}
+                    {url.trim() && (
+                      <div className="flex items-center px-3">
+                        {isValidUrl ? (
+                          <svg
+                            className="w-5 h-5 text-green-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            className="w-5 h-5 text-red-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* URL Error Message for Desktop */}
+                  {urlError && (
+                    <p className="text-red-600 text-sm text-left">{urlError}</p>
+                  )}
+
+                  {/* Email Input */}
+                  <div
+                    className={`flex w-full bg-gray-100 rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-all duration-200 ${
+                      emailError
+                        ? "border-red-300 bg-red-50"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    {/* Email Icon */}
+                    <div className="flex items-center px-3 text-gray-400">
+                      <svg
+                        width="20"
+                        height="20"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+
+                    {/* Email Input Field */}
+                    <input
+                      type="email"
+                      placeholder="Enter your email address"
+                      value={email}
+                      onChange={handleEmailChange}
+                      className={`flex-1 bg-transparent outline-none px-2 py-3 text-lg placeholder-gray-500 ${
+                        emailError ? "text-red-700" : ""
+                      }`}
+                      onKeyPress={handleKeyPress}
+                    />
+
+                    {/* Email Status Icon */}
+                    {email?.trim() && (
+                      <div className="flex items-center px-3">
+                        {isValidEmail ? (
+                          <svg
+                            className="w-5 h-5 text-green-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            className="w-5 h-5 text-red-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Email Error Message for Desktop */}
+                  {emailError && (
+                    <p className="text-red-600 text-sm text-left">
+                      {emailError}
+                    </p>
+                  )}
+
+                  {/* Full Width Analyze Button */}
                   <button
                     onClick={handleAnalyzeClick}
                     disabled={isButtonDisabled}
-                    className={`px-6 py-3 font-bold text-base transition-all duration-200 ${
+                    className={`w-full py-4 font-bold text-base rounded-lg transition-all duration-200 shadow-sm ${
                       isButtonDisabled
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
+                        : "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:shadow-md cursor-pointer"
                     }`}
                   >
-                    {"Analyze"}
+                    Analyze
                   </button>
                 </div>
-
-                {/* Error Message for Desktop */}
-                {urlError && (
-                  <p className="text-red-600 text-sm mt-2 text-left">
-                    {urlError}
-                  </p>
-                )}
               </div>
             </div>
           </div>

@@ -101,6 +101,7 @@ const CompetitorAIApp = () => {
       <Header
         setCurrentStep={setCurrentStep}
         setUrl={setUrl}
+        setEmail={setEmail}
         showMobileMenu={showMobileMenu}
         setShowMobileMenu={setShowMobileMenu}
       />
@@ -108,6 +109,8 @@ const CompetitorAIApp = () => {
         <LandingPage
           url={url}
           setUrl={setUrl}
+          email={email}
+          setEmail={setEmail}
           handleAnalyze={handleAnalyze}
           setCurrentStep={setCurrentStep}
         />

@@ -4,11 +4,12 @@ const ReportTypeModal = ({
   reportType,
   setReportType,
   handleReportGeneration,
+  email,
+  setEmail,
+  phone,
+  setPhone,
 }) => {
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [errors, setErrors] = useState({});
-
   const validateForm = () => {
     const newErrors = {};
 

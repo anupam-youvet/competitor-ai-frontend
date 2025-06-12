@@ -25,8 +25,6 @@ const ContactFormSuccess = ({ setCurrentStep, setUrl }) => (
       <button
         onClick={() => {
           setCurrentStep("landing");
-          setUrl("");
-          window.scrollTo(0, 0);
         }}
         className="w-full bg-blue-600 text-white font-semibold px-6 py-3 sm:py-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200 text-base sm:text-lg"
       >

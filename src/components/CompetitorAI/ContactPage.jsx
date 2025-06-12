@@ -60,6 +60,10 @@ const ContactPage = ({ setCurrentStep }) => {
     }
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Main Content */}
