@@ -51,6 +51,7 @@ const ContactPage = ({ setCurrentStep }) => {
         });
         await response.json();
         setCurrentStep("contactSuccess");
+        window.scrollTo(0, 0);
       } catch (error) {
         console.log("Error in contact form: ", error);
       } finally {
