@@ -16,6 +16,7 @@ const CompetitorAIApp = () => {
   const [snapshot, setSnapshot] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
   const [reportType, setReportType] = useState("quick");
   const [progress, setProgress] = useState(0);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -36,7 +37,7 @@ const CompetitorAIApp = () => {
           const response = await fetch(`${API_URL}/leads/snapshot`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url: url, email: email }),
+            body: JSON.stringify({ url: url, email: email, name: name }),
           });
           const data = await response.json();
           setSnapshot(data?.data);
@@ -100,8 +101,6 @@ const CompetitorAIApp = () => {
     <div className="min-h-screen bg-white">
       <Header
         setCurrentStep={setCurrentStep}
-        setUrl={setUrl}
-        setEmail={setEmail}
         showMobileMenu={showMobileMenu}
         setShowMobileMenu={setShowMobileMenu}
       />
@@ -111,6 +110,8 @@ const CompetitorAIApp = () => {
           setUrl={setUrl}
           email={email}
           setEmail={setEmail}
+          name={name}
+          setName={setName}
           handleAnalyze={handleAnalyze}
           setCurrentStep={setCurrentStep}
         />

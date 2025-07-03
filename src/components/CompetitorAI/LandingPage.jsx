@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from "react";
 import robotImg from "../../assets/robot.png";
-const LandingPage = ({ url, setUrl, handleAnalyze, email, setEmail }) => {
+const LandingPage = ({
+  url,
+  setUrl,
+  handleAnalyze,
+  email,
+  setEmail,
+  name,
+  setName,
+}) => {
   const [urlError, setUrlError] = useState("");
   const [isValidUrl, setIsValidUrl] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);
+  const [nameError, setNameError] = useState("");
+  const [isValidName, setIsValidName] = useState(false);
 
   // URL validation function
   const validateUrl = (inputUrl) => {
@@ -44,6 +54,24 @@ const LandingPage = ({ url, setUrl, handleAnalyze, email, setEmail }) => {
     }
   };
 
+  // Name validation function
+  const validateName = (inputName) => {
+    if (!inputName.trim()) {
+      setNameError("");
+      setIsValidName(false);
+      return;
+    }
+
+    if (inputName.trim().length < 2) {
+      setNameError("Name must be at least 2 characters long");
+      setIsValidName(false);
+      return;
+    }
+
+    setNameError("");
+    setIsValidName(true);
+  };
+
   // Email validation function
   const validateEmail = (inputEmail) => {
     if (!inputEmail.trim()) {
@@ -64,6 +92,11 @@ const LandingPage = ({ url, setUrl, handleAnalyze, email, setEmail }) => {
     setIsValidEmail(true);
   };
 
+  // Validate name whenever it changes
+  useEffect(() => {
+    validateName(name);
+  }, [name]);
+
   // Validate URL whenever it changes
   useEffect(() => {
     validateUrl(url);
@@ -77,8 +110,13 @@ const LandingPage = ({ url, setUrl, handleAnalyze, email, setEmail }) => {
   useEffect(() => {
     setEmail("");
     setUrl("");
+    setName("");
     window.scrollTo(0, 0);
   }, []);
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
 
   const handleUrlChange = (e) => {
     setUrl(e.target.value);
@@ -89,7 +127,14 @@ const LandingPage = ({ url, setUrl, handleAnalyze, email, setEmail }) => {
   };
 
   const handleAnalyzeClick = () => {
-    if (isValidUrl && url.trim() && isValidEmail && email?.trim()) {
+    if (
+      isValidUrl &&
+      url.trim() &&
+      isValidEmail &&
+      email.trim() &&
+      isValidName &&
+      name?.trim()
+    ) {
       handleAnalyze();
     }
   };
@@ -100,14 +145,21 @@ const LandingPage = ({ url, setUrl, handleAnalyze, email, setEmail }) => {
       isValidUrl &&
       url.trim() &&
       isValidEmail &&
-      email?.trim()
+      email?.trim() &&
+      isValidName &&
+      name?.trim()
     ) {
       handleAnalyze();
     }
   };
 
   const isButtonDisabled =
-    !url.trim() || !isValidUrl || !email?.trim() || !isValidEmail;
+    !url.trim() ||
+    !isValidUrl ||
+    !email?.trim() ||
+    !isValidEmail ||
+    !name?.trim() ||
+    !isValidName;
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -144,6 +196,81 @@ const LandingPage = ({ url, setUrl, handleAnalyze, email, setEmail }) => {
             <div className="w-full max-w-2xl mx-auto lg:mx-0 mt-2">
               {/* Mobile: Stacked Layout */}
               <div className="flex flex-col sm:hidden w-full gap-3">
+                {/* Name Input with Icon */}
+                <div
+                  className={`flex w-full bg-gray-100 rounded-lg border shadow-sm transition-colors duration-200 ${
+                    nameError ? "border-red-300 bg-red-50" : "border-gray-200"
+                  }`}
+                >
+                  <div className="flex items-center px-4 text-gray-400">
+                    <svg
+                      width="20"
+                      height="20"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Enter your name"
+                    value={name}
+                    onChange={handleNameChange}
+                    className={`flex-1 bg-transparent outline-none px-2 py-4 text-base placeholder-gray-500 ${
+                      nameError ? "text-red-700" : ""
+                    }`}
+                    onKeyPress={handleKeyPress}
+                  />
+                  {/* Name Status Icon */}
+                  {name.trim() && (
+                    <div className="flex items-center px-3">
+                      {isValidName ? (
+                        <svg
+                          className="w-5 h-5 text-green-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          className="w-5 h-5 text-red-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Name Error Message */}
+                {nameError && (
+                  <p className="text-red-600 text-sm text-left px-1">
+                    {nameError}
+                  </p>
+                )}
+
                 {/* URL Input with Icon */}
                 <div
                   className={`flex w-full bg-gray-100 rounded-lg border shadow-sm transition-colors duration-200 ${
@@ -304,13 +431,92 @@ const LandingPage = ({ url, setUrl, handleAnalyze, email, setEmail }) => {
                       : "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:shadow-md"
                   }`}
                 >
-                  {"Analyze"}
+                  Analyze
                 </button>
               </div>
 
               {/* Desktop: Inline Layout */}
               <div className="hidden sm:block w-full">
                 <div className="flex flex-col gap-3">
+                  {/* Name Input */}
+                  <div
+                    className={`flex w-full bg-gray-100 rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-all duration-200 ${
+                      nameError ? "border-red-300 bg-red-50" : "border-gray-200"
+                    }`}
+                  >
+                    {/* Name Icon */}
+                    <div className="flex items-center px-3 text-gray-400">
+                      <svg
+                        width="20"
+                        height="20"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                    </div>
+
+                    {/* Name Input Field */}
+                    <input
+                      type="text"
+                      placeholder="Enter your name"
+                      value={name}
+                      onChange={handleNameChange}
+                      className={`flex-1 bg-transparent outline-none px-2 py-3 text-lg placeholder-gray-500 ${
+                        nameError ? "text-red-700" : ""
+                      }`}
+                      onKeyPress={handleKeyPress}
+                    />
+
+                    {/* Name Status Icon */}
+                    {name.trim() && (
+                      <div className="flex items-center px-3">
+                        {isValidName ? (
+                          <svg
+                            className="w-5 h-5 text-green-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            className="w-5 h-5 text-red-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Name Error Message for Desktop */}
+                  {nameError && (
+                    <p className="text-red-600 text-sm text-left">
+                      {nameError}
+                    </p>
+                  )}
+
                   {/* URL Input */}
                   <div
                     className={`flex w-full bg-gray-100 rounded-lg overflow-hidden border shadow-sm hover:shadow-md transition-all duration-200 ${

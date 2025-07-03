@@ -297,7 +297,7 @@ const ContactPage = ({ setCurrentStep }) => {
                 className={`w-full py-3 px-6 rounded-xl font-semibold text-white transition-all duration-200 ${
                   isSubmitting
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg active:transform active:scale-95"
+                    : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg active:transform active:scale-95 cursor-pointer"
                 }`}
               >
                 {isSubmitting ? (

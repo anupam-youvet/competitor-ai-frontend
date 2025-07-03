@@ -1,13 +1,7 @@
 import React from "react";
 import { Menu, X } from "lucide-react";
 
-const Header = ({
-  setCurrentStep,
-  showMobileMenu,
-  setShowMobileMenu,
-  setUrl,
-  setEmail,
-}) => {
+const Header = ({ setCurrentStep, showMobileMenu, setShowMobileMenu }) => {
   return (
     <>
       {/* Header */}
